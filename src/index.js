@@ -1,6 +1,6 @@
 const express = require('express')
 const handlebars = require('express-handlebars')
-const path = require('path')
+    // const path = require('path')
 const route = require('./routes')
 const db = require('./config/db')
 const multer = require('multer')
@@ -19,7 +19,7 @@ const hbs = handlebars.create({ extname: '.hbs' });
 app.use(express.urlencoded({ extended: true }))
 app.engine('hbs', hbs.engine);
 app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, 'resources\\views'));
+// app.set('views', path.join(__dirname, 'resources\\views'));
 
 route(app);
 

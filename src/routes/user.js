@@ -37,9 +37,19 @@ router.put('/api/update', async(req, res) => {
     res.json({ success: data })
 })
 
-router.delete('/api/delete', async(req, res) => {
+router.delete('/api/delete/:email', async(req, res) => {
     let data = await user.del(req.params);
     res.json({ success: data })
+})
+
+router.get('/api', (req, res) => {
+    res.json({
+        '/add': "post user {email = 'email người dùng' , password= 'mật khẩu' ",
+        '/login': "post user {email = 'email người dùng' , password= 'mật khẩu' ",
+        '/show': "get user trả về toàn bộ user",
+        '/update': "put user {email = 'email' ,password = 'mk cũ' , newpassword= 'mk mới' }",
+        '/delete/:email': "delete user {/:email email muốn xóa }",
+    })
 })
 
 module.exports = router;

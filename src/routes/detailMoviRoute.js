@@ -8,19 +8,14 @@ router.post('/api/add', (req, res) => {
 });
 
 router.get('/api/idshow/:id_movie', async(req, res) => {
-    const data = await detailMovieModel.show();
-    res.json({
-        suceess: 'true',
-        "data": data,
-    });
+    await detailMovieModel.idShow(req.params)
+        .then(data => res.json(data))
 });
 
 router.get('/api/slugshow/:slug', async(req, res) => {
-    const data = await detailMovieModel.show();
-    res.json({
-        suceess: 'true',
-        "data": data,
-    });
+    data = await detailMovieModel.slugShow(req.params)
+        .then(data => res.json(data))
+
 });
 
 router.put('/api/update', async(req, res) => {

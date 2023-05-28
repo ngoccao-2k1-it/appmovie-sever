@@ -1,6 +1,7 @@
 const express = require('express')
     // const handlebars = require('express-handlebars')
     // const path = require('path')
+const cors = require('cors');
 const route = require('./routes')
 const db = require('./config/db')
 const multer = require('multer')
@@ -10,6 +11,8 @@ const upload = multer()
 db.connect();
 
 const app = express();
+app.use(cors());
+app.options('*', cors());
 const port = process.env.PORT || 3000;
 // const hbs = handlebars.create({ extname: '.hbs' });
 

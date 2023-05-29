@@ -24,6 +24,8 @@ module.exports = {
         }
     },
 
+
+
     getOneMovie: async(movie) => {
         try {
             return { success: true, data: await movies.find({ slug: movie.slug }) };
@@ -58,6 +60,26 @@ module.exports = {
             return await movies.find({ name: { $regex: movie.name } });
         } catch (error) {
             console.log(error, movie.name);
+        }
+
+    },
+
+    filterCategory: async(movie) => {
+        try {
+            console.log(movie.category);
+            return await movies.find({ category: { $regex: movie.category } });
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+
+    filterType: async(movie) => {
+        try {
+            return await movies.find({ type: { $regex: movie.type } });
+        } catch (error) {
+            console.log(error);
         }
 
     },

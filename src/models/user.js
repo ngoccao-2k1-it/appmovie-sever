@@ -37,9 +37,9 @@ module.exports = {
         if (user.newpassword.length < 8 || user.newpassword.length > 24)
             return 'false';
         try {
-            data = await users.findOne({ username: user.username });
+            data = await users.findOne({ email: user.email });
             if (data.password == user.password) {
-                await users.updateOne({ username: user.username }, { password: user.newpassword });
+                await users.updateOne({ email: user.username }, { password: user.newpassword });
                 return 'true';
             } else {
                 return 'false';
@@ -52,7 +52,7 @@ module.exports = {
 
     del: async(user) => {
         try {
-            await users.deleteOne({ username: user.username })
+            await users.deleteOne({ email: user.email })
             return true;
         } catch (error) {
             console.log(error);

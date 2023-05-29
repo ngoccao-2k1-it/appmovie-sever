@@ -39,6 +39,22 @@ router.get('/api/search/:name', async(req, res) => {
     });
 });
 
+router.get('/api/filtercategory/:category', async(req, res) => {
+    const data = await movieModels.filterCategory(req.params);
+    res.json({
+        success: 'true',
+        data: data
+    });
+});
+
+router.get('/api/filtertype/:type', async(req, res) => {
+    const data = await movieModels.filterType(req.params);
+    res.json({
+        success: 'true',
+        data: data
+    });
+});
+
 router.get('/api/category', (req, res) => {
     movieModels.category()
         .then(data => res.json(data))
@@ -58,6 +74,8 @@ router.get('/api', (req, res) => {
         '/update': "put phim {_id = 'id bộ phim' ,name = 'tên của bộ phim' , category= 'thể loại', country= 'quốc gia'}, type:'loại phim',time:'thời lượng phim',describe:'mô tả phim',image_src:'link ảnh phim' }",
         '/delete/:id': "delete phim {/:id _id của bộ phim }",
         '/search/:name': "get bộ phim {/:name cụm từ muốn tìm kiếm theo tên bộ phim }",
+        '/filtertype/:type': "get { /:type loại phim(phim bộ, phim lẻ), trả về ds phim}",
+        '/filtercategory/:category': "get { /:category thể loại phim muốn lấy, trả về ds phim}",
         '/category': "get thể loại{lấy toàn bộ ds thể loại phim có trong phim }",
         '/addfollow': "post follow bộ phim{id:'id của bộ phim',e:'email(tài khoản người dùng)' }",
     })

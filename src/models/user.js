@@ -19,7 +19,10 @@ module.exports = {
         try {
             data = await users.findOne({ email: user.username });
             if (data.password == user.password) {
-                return { success: true, data: await users.findOne({ email: user.username }, { select: ('email -_id') }) };
+                return {
+                    success: true,
+                    data: await users.findOne({ email: user.username }).select('email -_id')
+                };
             } else {
                 return { success: false };
             }

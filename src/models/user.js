@@ -7,8 +7,15 @@ const users = require('./schemas/user');
 module.exports = {
     creat: async(user) => {
         try {
-            await new users(user).save();
-            return { success: true, data: await users.find() };
+            data = {
+                email: user.username,
+                password: user.password,
+                jurisdiction: '',
+                verify_user: '',
+                access_token: '',
+            }
+            await new users(data).save();
+            return { success: true };
         } catch (error) {
             console.log(error);
             return { success: false };

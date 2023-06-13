@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const users = require('./schemas/user');
+const { use } = require('../routes/user');
 
 
 
@@ -24,11 +25,15 @@ module.exports = {
 
     login: async(user) => {
         try {
-            data = await users.findOne({ email: user.username });
-            if (data.password == user.password) {
+            let use = user.username.toString().trim()
+            let pas = user.password.toString().trim()
+            data = await users.findOne({ email: use });
+            if (data.password == pas) {
                 return {
+                    username: typeof user.username,
+                    password: typeof user.password,
                     success: true,
-                    data: await users.findOne({ email: user.username }).select('email -_id')
+                    data: await users.findOne({ email: use }).select('email -_id')
                 };
             } else {
                 return { success: false };

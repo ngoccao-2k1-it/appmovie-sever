@@ -27,9 +27,8 @@ module.exports = {
         let use = user.username.toString().trim()
         let pas = user.password.toString().trim()
         try {
-
-            data = await users.findOne({ email: use });
-            if (data.password == pas) {
+            data = await users.findOne({ email: use })
+            if (await data.password == pas) {
                 return {
                     error: 'sai k biết ở đâu',
                     username: typeof user.username,

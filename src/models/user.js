@@ -27,7 +27,9 @@ module.exports = {
         let use = user.username.toString().trim()
         let pas = user.password.toString().trim()
         try {
-            data = await users.findOne({ email: use });
+            data = await users.findOne({ email: use }).then(data => {
+                console.log(data);
+            })
             console.log(data);
             setTimeout(() => {
                 console.log(data);

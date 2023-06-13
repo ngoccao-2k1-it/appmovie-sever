@@ -52,7 +52,7 @@ module.exports = {
         } catch (error) {
             console.log(error);
             return {
-                error: 'err',
+                error: error,
                 success: false,
                 username: typeof user.username,
                 password: typeof user.password,

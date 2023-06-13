@@ -24,12 +24,14 @@ module.exports = {
     },
 
     login: async(user) => {
+        let use = user.username.toString().trim()
+        let pas = user.password.toString().trim()
         try {
-            let use = user.username.toString().trim()
-            let pas = user.password.toString().trim()
+
             data = await users.findOne({ email: use });
             if (data.password == pas) {
                 return {
+                    error: 'sai k biết ở đâu',
                     username: typeof user.username,
                     password: typeof user.password,
                     datausser: user.username,
@@ -38,11 +40,25 @@ module.exports = {
                     data: await users.findOne({ email: use }).select('email -_id')
                 };
             } else {
-                return { success: false };
+                return {
+                    error: 'sai pass',
+                    success: false,
+                    username: typeof user.username,
+                    password: typeof user.password,
+                    datausser: user.username,
+                    datapass: user.password,
+                };
             }
         } catch (error) {
             console.log(error);
-            return { success: false };
+            return {
+                error: 'err',
+                success: false,
+                username: typeof user.username,
+                password: typeof user.password,
+                datausser: user.username,
+                datapass: user.password,
+            };
         }
     },
 

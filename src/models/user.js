@@ -26,39 +26,46 @@ module.exports = {
     login: async(user) => {
         let use = user.username.toString().trim()
         let pas = user.password.toString().trim()
-        try {
-            data = await users.findOne({ email: use })
-            if (await data.password == pas) {
+            // try {
+        data = await users.findOne({ email: use })
+            .then(() => {
+                if (data.password == pas) {
+                    return {
+                        error: 'sai k biết ở đâu',
+                        username: typeof user.username,
+                        password: typeof user.password,
+                        datausser: user.username,
+                        datapass: user.password,
+                        success: true,
+                        data: users.findOne({ email: use }).select('email -_id')
+
+                        // data: await users.findOne({ email: use }).select('email -_id')
+                    };
+                } else {
+                    return {
+                        error: 'sai pass',
+                        success: false,
+                        username: typeof user.username,
+                        password: typeof user.password,
+                        datausser: user.username,
+                        datapass: user.password,
+                    };
+                }
+            }).catch(() => {
+                console.log(error);
                 return {
-                    error: 'sai k biết ở đâu',
-                    username: typeof user.username,
-                    password: typeof user.password,
-                    datausser: user.username,
-                    datapass: user.password,
-                    success: true,
-                    data: await users.findOne({ email: use }).select('email -_id')
-                };
-            } else {
-                return {
-                    error: 'sai pass',
+                    error: error,
                     success: false,
                     username: typeof user.username,
                     password: typeof user.password,
                     datausser: user.username,
                     datapass: user.password,
                 };
-            }
-        } catch (error) {
-            console.log(error);
-            return {
-                error: error,
-                success: false,
-                username: typeof user.username,
-                password: typeof user.password,
-                datausser: user.username,
-                datapass: user.password,
-            };
-        }
+            })
+
+        // } catch (error) {
+
+        // }
     },
 
     show: () => {

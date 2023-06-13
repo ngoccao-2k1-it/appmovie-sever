@@ -32,6 +32,8 @@ module.exports = {
                 return {
                     username: typeof user.username,
                     password: typeof user.password,
+                    datausser: user.username,
+                    datapass: user.password,
                     success: true,
                     data: await users.findOne({ email: use }).select('email -_id')
                 };

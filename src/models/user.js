@@ -7,7 +7,6 @@ const { use } = require('../routes/user');
 
 module.exports = {
     creat: async(res, user) => {
-
         data = {
             email: user.username,
             password: user.password,
@@ -16,9 +15,9 @@ module.exports = {
             access_token: '',
         }
         await new users(data).save()
-        then(() => {
+            .then(() => {
                 res.json({
-                    success: 'true',
+                    success: true,
                     data: user.username,
                 });
             })
@@ -34,16 +33,16 @@ module.exports = {
             .then(data => {
                 if (data.password == user.password) {
                     res.json({
-                        success: 'true',
+                        success: true,
                         data: data.email
                     })
                 } else {
-                    res.json({ success: 'false' })
+                    res.json({ success: false })
                 }
             })
             .catch(error => {
                 console.log(error);
-                res.json({ success: 'f', })
+                res.json({ success: false, })
             })
     },
 
@@ -52,16 +51,16 @@ module.exports = {
             .then(data => {
                 if (data.password == user.password && data.jurisdiction == 'admin') {
                     res.json({
-                        success: 'true',
+                        success: true,
                         data: data.email
                     })
                 } else {
-                    res.json({ success: 'false' })
+                    res.json({ success: false })
                 }
             })
             .catch(error => {
                 console.log(error);
-                res.json({ success: 'f', })
+                res.json({ success: false, })
             })
     },
 
@@ -80,27 +79,27 @@ module.exports = {
 
     update: async(user) => {
         if (user.newpassword.length < 8 || user.newpassword.length > 24)
-            return 'false';
+            return false;
         try {
             data = await users.findOne({ email: user.username });
             if (data.password == user.password) {
                 await users.updateOne({ email: user.username }, { password: user.newpassword });
-                return 'true';
+                return true;
             } else {
-                return 'false';
+                return false;
             }
         } catch (error) {
             console.log(error);
-            return 'false';
+            return false;
         }
     },
 
     AdminUpdate: async(res, user) => {
         await users.updateOne({ email: user.username }, { password: user.password, jurisdiction: user.jurisdiction })
-            .then(() => { res.json({ success: 'true' }) })
+            .then(() => { res.json({ success: true }) })
             .catch(error => {
                 console.log(error);
-                res.json({ success: 'false' })
+                res.json({ success: false })
             })
     },
 

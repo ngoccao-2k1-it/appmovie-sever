@@ -5,6 +5,7 @@ const user = require('../models/user');
 
 router.post('/api/add', async(req, res) => {
     await user.creat(res, req.body);
+    console.log(req.body);
 })
 
 router.post('/api/login', async(req, res) => {

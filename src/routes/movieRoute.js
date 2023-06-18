@@ -1,13 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const movieModels = require('../models/moviModel');
+const multer = require('multer');
 
 
-router.post('/api/add', async(req, res) => {
-    movieModels.creat(req.body)
-        .then(data => res.json(data))
+
+
+const parser = multer();
+
+
+router.post('/api/add', parser.single('file'), async(req, res) => {
+    await movieModels.creat(res, req.body, req.file)
 });
 
+router.put('/api/update', parser.single('file'), async(req, res) => {
+    await movieModels.update(res, req.body, req.file)
+})
+
+router.delete('/api/delete/:_id', async(req, res) => {
+    await movieModels.del(res, req.params)
+})
 
 router.get('/api/show', async(req, res) => {
     await movieModels.show()
@@ -19,15 +31,9 @@ router.get('/api/getmovie/:slug', async(req, res) => {
         .then(data => res.json(data))
 });
 
-router.put('/api/update', async(req, res) => {
-    await movieModels.update(req.body)
-        .then(data => res.json(data))
-})
 
-router.delete('/api/delete/:_id', async(req, res) => {
-    let data = await movieModels.del(req.params);
-    res.json({ success: data })
-})
+
+
 
 
 

@@ -4,23 +4,16 @@ const user = require('../models/user');
 
 
 router.post('/api/add', async(req, res) => {
-    try {
-        const data = await user.creat(req.body);
-        res.json({
-            success: 'true',
-            data: data,
-        });
-    } catch (error) {
-        res.json({
-            success: 'false',
-        });
-        console.log(error);
-    };
+    await user.creat(res, req.body);
 })
 
 router.post('/api/login', async(req, res) => {
-    await user.login(req.body)
-        .then(data => res.json(data))
+    await user.login(res, req.body)
+
+})
+
+router.post('/api/loginadmin', async(req, res) => {
+    await user.loginAdmin(res, req.body)
 
 })
 
@@ -32,9 +25,21 @@ router.get('/api/show', async(req, res) => {
     });
 })
 
+router.get('/api/search/:username', async(req, res) => {
+    const data = await user.search(req.params);
+    res.json({
+        success: 'true',
+        data: data,
+    });
+})
+
 router.put('/api/update', async(req, res) => {
     let data = await user.update(req.body);
     res.json({ success: data })
+})
+
+router.put('/api/adminupdate', async(req, res) => {
+    await user.AdminUpdate(res, req.body);
 })
 
 router.delete('/api/delete/:email', async(req, res) => {

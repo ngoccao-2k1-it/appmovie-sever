@@ -15,7 +15,7 @@ module.exports = {
                 content: comment.c
             };
             await new comments(cmt).save();
-            return { success: true, data: await comments.find({ id_movie: comment.id }).sort({ creatAt: 1 }) };
+            return { success: true, data: await comments.find({ id_movie: comment.id }) };
         } catch (error) {
             console.log(error);
             return { success: false };

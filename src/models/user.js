@@ -6,69 +6,83 @@ const { use } = require('../routes/user');
 
 
 module.exports = {
-    creat: async(user) => {
-        try {
-            data = {
-                email: user.username,
-                password: user.password,
-                jurisdiction: '',
-                verify_user: '',
-                access_token: '',
-            }
-            await new users(data).save();
-            return { success: true };
-        } catch (error) {
-            console.log(error);
-            return { success: false };
+    creat: async(res, user) => {
+
+        data = {
+            email: user.username,
+            password: user.password,
+            jurisdiction: user.jurisdiction,
+            verify_user: '',
+            access_token: '',
         }
+        await new users(data).save()
+        then(() => {
+                res.json({
+                    success: 'true',
+                    data: user.username,
+                });
+            })
+            .catch(error => {
+                console.log(error);
+                res.json({ success: false })
+            });
+
     },
 
-    login: async(user) => {
-        let returndata;
-        // try {
+    login: async(res, user) => {
         await users.findOne({ email: user.username })
             .then(data => {
                 if (data.password == user.password) {
-                    returndata = {
-                        success: true,
+                    res.json({
+                        success: 'true',
                         data: data.email
-                    };
+                    })
                 } else {
-                    console.log('saipass');
-                    returndata = {
-                        success: false,
-                    };
+                    res.json({ success: 'false' })
                 }
             })
             .catch(error => {
                 console.log(error);
-                returndata = {
-                    success: false,
-                };
+                res.json({ success: 'f', })
             })
-        return returndata;
+    },
 
-        // } catch (error) {
-        //     console.log(error);
-        //     return {
-        //         success: false,
-        //         username: typeof user.username,
-        //         password: typeof user.password,
-        //         datausser: user.username,
-        //         datapass: user.password,
-        //     };
-        // }
+    loginAdmin: async(res, user) => {
+        await users.findOne({ email: user.username })
+            .then(data => {
+                if (data.password == user.password && data.jurisdiction == 'admin') {
+                    res.json({
+                        success: 'true',
+                        data: data.email
+                    })
+                } else {
+                    res.json({ success: 'false' })
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                res.json({ success: 'f', })
+            })
     },
 
     show: () => {
         return users.find({});
     },
 
+    search: async(user) => {
+        try {
+            return await users.find({ email: { $regex: user.username.toLowerCase().trim() } });
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+
     update: async(user) => {
         if (user.newpassword.length < 8 || user.newpassword.length > 24)
             return 'false';
         try {
-            data = await users.findOne({ email: user.email });
+            data = await users.findOne({ email: user.username });
             if (data.password == user.password) {
                 await users.updateOne({ email: user.username }, { password: user.newpassword });
                 return 'true';
@@ -79,6 +93,15 @@ module.exports = {
             console.log(error);
             return 'false';
         }
+    },
+
+    AdminUpdate: async(res, user) => {
+        await users.updateOne({ email: user.username }, { password: user.password, jurisdiction: user.jurisdiction })
+            .then(() => { res.json({ success: 'true' }) })
+            .catch(error => {
+                console.log(error);
+                res.json({ success: 'false' })
+            })
     },
 
     del: async(user) => {

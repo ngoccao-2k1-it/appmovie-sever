@@ -10,6 +10,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "body-parser": "^1.20.2",
         "cloudinary": "^1.37.0",
         "cors": "^2.8.5",
         "dotenv": "^16.0.3",
@@ -19,7 +20,9 @@
         "mongoose-slug-generator": "^1.0.4",
         "mongoose-slug-updater": "^3.3.0",
         "multer": "^1.4.5-lts.1",
-        "slug": "^8.2.2"
+        "multer-storage-cloudinary": "^4.0.0",
+        "slug": "^8.2.2",
+        "streamifier": "^0.1.1"
     },
     "devDependencies": {
         "nodemon": "^2.0.22"

@@ -1,18 +1,64 @@
 const mongoose = require('mongoose');
 const movies = require('./schemas/movie');
-var slug = require('slug');
+const cloudinary = require('../middleware/cloudinary');
+
+let dataMovie = {
+    name: '',
+    category: '',
+    country: '',
+    type: '',
+    time: '',
+    describe: '',
+    year: '',
+}
+
+function resetDataMovie() {
+    dataMovie.name = '',
+        dataMovie.category = '',
+        dataMovie.country = '',
+        dataMovie.type = '',
+        dataMovie.time = '',
+        dataMovie.describe = '',
+        dataMovie.year = ''
+}
 
 
+function dataUpload(movie) {
+    resetDataMovie();
+    dataMovie.name = movie.name.toLowerCase().trim(),
+        dataMovie.category = movie.category.toLowerCase().trim(),
+        dataMovie.country = movie.country.toLowerCase().trim(),
+        dataMovie.type = movie.type.toLowerCase().trim(),
+        dataMovie.time = movie.time.toLowerCase().trim(),
+        dataMovie.describe = movie.describe.toLowerCase().trim(),
+        dataMovie.year = movie.year.toLowerCase().trim();
+}
 
 module.exports = {
-    creat: async(movie) => {
-        try {
-            await new movies(movie).save();
-            return { success: true, data: await movies.find() };
-        } catch (error) {
-            console.log(error);
-            return { success: false, };
-        }
+    creat: async(res, movie, file) => {
+        dataUpload(movie);
+        await new movies(dataMovie).save()
+            .then(data => {
+                cloudinary.uploadCloudinary(file, 'image', data._id)
+                    .then(async dataCloud => {
+                        await movies.updateOne({
+                            _id: data._id
+                        }, {
+                            image_src: dataCloud.url,
+                            id_image: dataCloud.public_id
+                        })
+                        res.json({ 'success': 'true' })
+                    })
+                    .catch(async(error) => {
+                        console.log(error);
+                        await movies.deleteOne({ _id: data._id })
+                        res.json({ 'success': 'false' })
+                    })
+            })
+            .catch(error => {
+                console.log(error);
+                res.json({ 'success': 'false' })
+            })
     },
 
     show: async() => {
@@ -35,29 +81,69 @@ module.exports = {
         }
     },
 
-    update: async(movie) => {
-        try {
-            await movies.updateOne({ _id: movie._id }, movie);
-            return { success: true, data: await movies.find() };
-        } catch (error) {
-            console.log(error);
-            return { success: false, };
-        }
+    update: async(res, movie, file) => {
+        dataUpload(movie);
+        await movies.updateOne({ _id: movie._id }, dataMovie)
+            .then(async() => {
+                await movies.findOne({ _id: movie._id })
+                    .then(data => {
+                        if (file) {
+                            idImageDelete = data.id_image;
+                            //reupload file cloudinay
+                            cloudinary.uploadCloudinary(file, 'image', data.id)
+                                .then(async dataCloud => {
+                                    await movies.updateOne({
+                                            _id: data._id
+                                        }, {
+                                            image_src: dataCloud.url,
+                                            id_image: dataCloud.public_id
+                                        })
+                                        //delete file cloudinary
+                                    cloudinary.destroyCloudinary(idImageDelete, 'image')
+                                    res.json({ 'success': 'true' })
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                    res.json({ 'success': 'false' })
+                                })
+                        } else {
+                            res.json({ 'success': 'true' })
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        res.json({ 'success': 'false' })
+                    })
+            })
+            .catch(error => {
+                console.log(error)
+                res.json({ 'success': 'false' })
+            })
     },
 
-    del: async(movie) => {
-        try {
-            await movies.findByIdAndDelete(movie._id)
-            return true;
-        } catch (error) {
-            console.log(error);
-            return { success: false, };
-        }
+    del: async(res, movie) => {
+        await movies.findOne({ _id: movie._id })
+            .then(data => {
+                cloudinary.destroyCloudinaryByTags(data._id)
+                    .then(async() => {
+                        cloudinary.destroyCloudinary(data.id_image, 'image')
+                        await movies.deleteOne({ _id: movie._id });
+                        res.json({ 'success': 'true' });
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        res.json({ 'success': 'false' });
+                    })
+            })
+            .catch(error => {
+                console.log(error);
+                res.json({ 'success': 'false' });
+            })
     },
 
     search: async(movie) => {
         try {
-            return await movies.find({ name: { $regex: movie.name } });
+            return await movies.find({ name: { $regex: movie.name.toLowerCase().trim() } });
         } catch (error) {
             console.log(error, movie.name);
         }
@@ -72,7 +158,6 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-
     },
 
     filterType: async(movie) => {
@@ -81,7 +166,6 @@ module.exports = {
         } catch (error) {
             console.log(error);
         }
-
     },
 
     category: async() => {
@@ -125,6 +209,5 @@ module.exports = {
             console.log(error);
             return { success: false };
         }
-
     }
 };

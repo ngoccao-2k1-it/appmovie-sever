@@ -13,7 +13,7 @@ module.exports = {
     uploadCloudinary: async(file, typeFile, tag) => {
         return new Promise((resolve, reject) => {
             let stream = cloudinary.uploader.upload_stream({
-                    folder: 'test',
+                    folder: 'web_movie',
                     resource_type: typeFile,
                     chunk_size: 100 * 1024 * 1024,
                     tags: tag,

@@ -26,6 +26,14 @@ router.get('/api/show', async(req, res) => {
         .then(data => res.json(data))
 });
 
+router.get('/api/search/:name', async(req, res) => {
+    const data = await movieModels.search(req.params);
+    res.json({
+        success: 'true',
+        data: data,
+    });
+})
+
 router.get('/api/getmovie/:slug', async(req, res) => {
     await movieModels.getOneMovie(req.params)
         .then(data => res.json(data))

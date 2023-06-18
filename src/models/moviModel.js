@@ -143,7 +143,7 @@ module.exports = {
 
     search: async(movie) => {
         try {
-            return await movies.find({ name: { $regex: data } });
+            return await movies.find({ name: { $regex: movie.name } });
         } catch (error) {
             console.log(error, movie.name);
         }
